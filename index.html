@@ -1,0 +1,325 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Comparison of HDR JPEG and AVIF</title>
+  
+  <style>
+  body {
+      background-color: white;
+      text-align: center;
+  }
+
+  body.white {
+      background-color: white;
+      color: black;
+  }
+
+  body.light-grey {
+      background-color: #bbb;
+      color: black;
+  }
+
+  body.mid-grey {
+      background-color: #888;
+      color: black;
+  }
+
+  body.dark-grey {
+      background-color: #333;
+      color: white;
+  }
+
+  body.black {
+      background-color: black;
+      color: white;
+  }
+
+  p {
+      text-align: justify;
+      line-height: 1.4;
+  }
+
+  button {
+      -webkit-appearance: none;
+      backgroud-color: #539298;
+      color: black;
+      border: 1px solid #333;
+      box-shadow: 0px 1px 0px #336;
+      border-radius: 5px;
+      font-size: 18px;
+      cursor: pointer;
+  }
+
+  button:hover, button:active {
+      background-color: #4d6997;
+  }
+
+  section.photo {
+      padding: 1em 3em;
+      margin-bottom: 2em;
+  }
+
+  section.photo p {
+      text-align: center;
+  }
+
+  section.photo > h2 {
+      margin: 0 0 0.7em 0;
+      font-size: 200%;
+  }
+
+  section.photo > img {
+      margin: 0 auto 15px auto;
+      display: block;
+  }
+
+  section.photo.citylife > img,
+  section.photo.pescariello1 > img,
+  section.photo.nizza > img {
+      width: 65%;
+  }
+  section.photo > div > div > img {
+      width: 200px;
+  }
+
+
+  section.photo.caciocavallo > img,
+  section.photo.pescariello0 > img {
+      height: 700px;
+  }
+  section.photo.caciocavallo > div > div > img,
+  section.photo.pescariello0 > div > div > img {
+      width: 150px;
+  }
+
+
+  section.photo > div > div {
+      display: inline-block;
+      margin: 0 5px;
+  }
+
+  section.photo > div > div > img {
+      margin: 0 auto 10px auto;
+      display: block;
+      cursor: pointer;
+  }
+
+  section.photo img:hover {
+      outline: 2px solid #bbf;
+  }
+  section.photo > div > div > img:hover {
+      outline: 2px solid #bbf;
+  }
+
+
+  </style>
+  <script>
+
+  function init() {
+      var buttons = Array.from(document.querySelectorAll(".background button"));
+      buttons.forEach(function (button) {
+          button.addEventListener("click", function (event) {
+              switch (button.textContent) {
+              case "White":
+                  document.body.className = "white";
+                  break;
+              case "Light grey":
+                  document.body.className = "light-grey";
+                  break;
+              case "Middle grey":
+                  document.body.className = "mid-grey";
+                  break;
+              case "Dark grey":
+                  document.body.className = "dark-grey";
+                  break;
+              case "Black":
+                  document.body.className = "black";
+              }
+          });
+      });
+
+      var sections = Array.from(document.querySelectorAll("section.photo"));
+      sections.forEach(function (section) {
+          var main_image = section.querySelector("img");
+          main_image.addEventListener("click", function (event) {
+              var p3_check = document.getElementById('p3-check');
+              var suffixes = ['-p3.jpeg', '-rec2020.jpeg', '.avif'];
+              var suffix_enabled = [
+                  document.getElementById('p3-check').checked,
+                  document.getElementById('rec2020-check').checked,
+                  document.getElementById('avif-check').checked
+              ];
+              for (var i = 0; i < 3; ++i) {
+                  if (event.target.src.match(suffixes[i])) {
+                    var i_next = i;
+                    for (var j = 1; j < 3; ++j) {
+                        if (suffix_enabled[(i + j) % 3]) {
+                            i_next = (i + j) % 3;
+                            break;
+                        }
+                    }
+                    event.target.src = event.target.src.replace(suffixes[i], suffixes[i_next]);
+                    break;
+                  }
+              }
+              var info = section.querySelector("p");
+              info.textContent = "Currently showing: " + event.target.src;
+          }, false);
+
+          var images = Array.from(section.querySelectorAll("div > div > img"));
+          images.forEach(function (image) {
+              image.addEventListener("click", function (event) {
+                  var main = section.querySelector("img");
+                  main.src = event.target.src;
+                  var info = section.querySelector("p");
+                  info.textContent = "Currently showing: " + event.target.src;
+              }, false);
+          });
+      });
+  }
+
+    window.addEventListener("load", init, false);
+
+  </script>
+</head>
+<body>
+    <p>
+        This is a copy-paste of <a href="https://webkit.org/blog-files/color-gamut/comparison.html">this site</a>.
+        Click each image to toggle between JPEG and AVIF.
+    </p>
+    <p>
+        You can toggle between the 10-bit Rec2020 AVIF and the 8-bit Rec2020 JPEG version of the image by clicking
+        on the image. Pinch-zoom while doing this to examine detail.
+        Select the versions to include in this cycle (note P3 is lower quality due to conversions).
+        <br>
+        <input type="checkbox" id="p3-check">
+        <label for="p3-check">P3 JPEG</label><br>
+        <input type="checkbox" id="rec2020-check" checked="True">
+        <label for="rec2020-check">Rec2020 JPEG</label><br>
+        <input type="checkbox" id="avif-check" checked="True">
+        <label for="avif-check">AVIF</label><br>
+    </p>
+    <p>
+        You can swap between the versions by tapping the buttons below
+        the image. You can also change the background color of this page:
+    </p>
+    <p class="background">
+        Page background color:
+        <button>White</button>
+        <button>Light grey</button>
+        <button>Middle grey</button>
+        <button>Dark grey</button>
+        <button>Black</button>
+    </p>
+
+    <section class="photo pescariello0">
+        <h2>Pescariello 0</h2>
+        <img src="pescariello0-hlg.avif">
+        <p>Currently showing: pescariello0-hlg.avif</p>
+        <p>Tap/click on one of the images below to replace the main image</p>
+        <div>
+            <div>
+                <img src="pescariello0-hlg-p3.jpeg">
+                <span>jpeg, P3</span>
+            </div>
+            <div>
+                <img src="pescariello0-hlg-rec2020.jpeg">
+                <span>jpeg, Rec2020</span>
+            </div>
+            <div>
+                <img src="pescariello0-hlg.avif">
+                <span>avif, Rec2020, 10 bit</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="photo pescariello1">
+        <h2>Pescariello 1</h2>
+        <img src="pescariello1-hlg.avif">
+        <p>Currently showing: pescariello1-hlg.avif</p>
+        <p>Tap/click on one of the images below to replace the main image</p>
+        <div>
+            <div>
+                <img src="pescariello1-hlg-p3.jpeg">
+                <span>jpeg, P3</span>
+            </div>
+            <div>
+                <img src="pescariello1-hlg-rec2020.jpeg">
+                <span>jpeg, Rec2020</span>
+            </div>
+            <div>
+                <img src="pescariello1-hlg.avif">
+                <span>avif, Rec2020, 10 bit</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="photo citylife">
+        <h2>City Life</h2>
+        <img src="citylife-hlg.avif">
+        <p>Currently showing: citylife-hlg.avif</p>
+        <p>Tap/click on one of the images below to replace the main image</p>
+        <div>
+            <div>
+                <img src="citylife-hlg-p3.jpeg">
+                <span>jpeg, P3</span>
+            </div>
+            <div>
+                <img src="citylife-hlg-rec2020.jpeg">
+                <span>jpeg, Rec2020</span>
+            </div>
+            <div>
+                <img src="citylife-hlg.avif">
+                <span>avif, Rec2020, 10 bit</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="photo caciocavallo">
+        <h2>Caciocavallo</h2>
+        <img src="caciocavallo-hlg.avif">
+        <p>Currently showing: caciocavallo-hlg.avif</p>
+        <p>Tap/click on one of the images below to replace the main image</p>
+        <div>
+            <div>
+                <img src="caciocavallo-hlg-p3.jpeg">
+                <span>jpeg, P3</span>
+            </div>
+            <div>
+                <img src="caciocavallo-hlg-rec2020.jpeg">
+                <span>jpeg, Rec2020</span>
+            </div>
+            <div>
+                <img src="caciocavallo-hlg.avif">
+                <span>avif, Rec2020, 10 bit</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="photo nizza">
+        <h2>Nizza</h2>
+        <img src="nizza-hlg.avif">
+        <p>Currently showing: nizza-hlg.avif</p>
+        <p>Tap/click on one of the images below to replace the main image</p>
+        <div>
+            <div>
+                <img src="nizza-hlg-p3.jpeg">
+                <span>jpeg, P3</span>
+            </div>
+            <div>
+                <img src="nizza-hlg-rec2020.jpeg">
+                <span>jpeg, Rec2020</span>
+            </div>
+            <div>
+                <img src="nizza-hlg.avif">
+                <span>avif, Rec2020, 10 bit</span>
+            </div>
+        </div>
+    </section>
+
+
+</body>
+</html>
+
+

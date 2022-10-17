@@ -1,0 +1,50 @@
+<html>
+<head>
+<script>
+window.onload = function() {
+  var image = document.getElementById("Image");
+  image.onload = function() {
+    var element_2d = document.getElementById("Canvas2D");
+    element_2d.configureHighDynamicRange({
+        smpteSt2086Metadata:{
+            redPrimaryX:0.708,
+            redPrimaryY:0.292,
+            greenPrimaryX:0.170,
+            greenPrimaryY:0.797,
+            bluePrimaryX:0.131,
+            bluePrimaryY:0.046,
+            whitePointX:0.3127,
+            whitePointY:0.3290,
+            minimumLuminance:1,
+            maximumLuminance:10000}});
+
+    element_2d.width = image.width;
+    element_2d.height = image.height;
+    var context_2d = element_2d.getContext('2d', {colorSpace:'rec2100-hlg'});
+    context_2d.drawImage(image, 0, 0, element_2d.width, element_2d.height);
+
+    var data_url = element_2d.toDataURL('image/jpeg', 1.0);
+    // console.log(data_url);
+
+    var element_image = document.getElementById("Image2");
+    element_image.src = data_url;
+  };
+/*
+  caciocavallo.avif
+  citylife.avif
+  nizza.avif
+  pescariello1.avif
+  caciocavallo2.avi
+  festa.avif
+  pescariello0.avif
+*/
+  image.src = 'caciocavallo-hlg.avif';
+}
+</script>
+</head>
+<body>
+<p>
+<canvas id="Canvas2D"></canvas>
+<img id="Image"/>
+<img id="Image2"/> </p>
+</body>
